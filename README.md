@@ -1,2 +1,2 @@
 # calculadora
-Initial projetct of extension groupt of USP Ribeirão Preto.
+Initial project of extension groupt of USP Ribeirão Preto.
