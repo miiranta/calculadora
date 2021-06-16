@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cctype>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -20,7 +21,8 @@ int main(int argc, char **argv) {
                 cout << "'a': adition" << "\n";
                 cout << "'s': subtraction" << "\n";
                 cout << "'m': multiplication" << "\n";
-                cout << "'d': division" << "\n\n";
+                cout << "'d': division" << "\n";
+                cout << "'e': exponentiation" << "\n\n";
             }
         }
         
@@ -48,6 +50,9 @@ int main(int argc, char **argv) {
             break;
         case 'd':
             result = value1 / value2;
+            break;
+        case 'e':
+            result = pow(value1, value2);
             break;
         default:
             has_result = false;
