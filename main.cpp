@@ -1,76 +1,57 @@
 #include <iostream>
-#include <cctype>
 #include <string>
-#include <cmath>
-#include "functions.hpp"
-
-#define ADDITION 9700
-#define SUBTRACTION 11500
-#define MULTIPLICATION 10900
-#define DIVISION 10000
-#define EXPONENCIATION 10100
-
+#include "handler.hpp"
 using namespace std;
 
-const int ARGS = 4; // Exact number of arguments needed in the operation
+int getHelp();
 
-int main(int argc, char **argv) {
+int main(){
 
-    if (argc != ARGS) {
-        if (argc == 2) {
-            char command{tolower(argv[1][0])};
+    string expression;
+    float res = 0;
 
-            if (command == 'h') {
-                cout << "To use the calculater, please type in the terminal: " << "\n";
-                cout << "{name_of_the_executable} {operation} {value1} {value2}" << "\n\n";
+    //Instructions
+    getHelp();
 
-                cout << "Operation may be:" << "\n";
-                cout << "'a': addition" << "\n";
-                cout << "'s': subtraction" << "\n";
-                cout << "'m': multiplication" << "\n";
-                cout << "'d': division" << "\n";
-                cout << "'e': exponentiation" << "\n\n";
-            }
+    //TURN ON DEBUG? 
+    int debug = 0;
+
+    //TURN ON LOOP?
+    int loop = 1;
+
+    do{
+
+        //Get string
+        cout << "\n\n\n"<< "Type expression: " << endl << " ";
+        getline(cin, expression);
+        
+        try{
+            res = parseExpression(expression, debug);
+        }catch(...){
+            cout << "\nError! Wrong syntax."; continue;
         }
         
-        cout << "Not in the supported format." << "\n";
-        cout << "Type '{name_of_the_executable} h' to know best." << "\n";
+        cout << "Response: ";
+        cout << res;
 
-        return 0;
-    }
+    }while(loop == 1);
+        
+}
 
-    long long hash = stringToHash(argv[1]);
-    int value1{stoi(argv[2])};
-    int value2{stoi(argv[3])};
-    int result;
-    bool has_result{true};
+int getHelp(){
+        cout << "\n" << "To use the calculator, please type in the terminal an expression using the following syntax: " << "\n\n";
 
-    switch(hash) {
-        case ADDITION:
-            result = value1 + value2;
-            break;
-        case SUBTRACTION:
-            result = value1 - value2;
-            break;
-        case MULTIPLICATION:
-            result = value1 * value2;
-            break;
-        case DIVISION:
-            result = value1 / value2;
-            break;
-        case EXPONENCIATION:
-            result = pow(value1, value2);
-            break;
-        default:
-            has_result = false;
-    }
-
-    if (has_result) {
-        cout << "The result you want is " << result << "\n";
-    }
-    else {
-        cout << "The operation that you ask is not supported yet!" << "\n";
-    }
+        cout << "Operation may be:" << "\n";
+        cout << "'+': addition" << "\n";
+        cout << "'-': subtraction" << "\n";
+        cout << "'x': multiplication" << "\n";
+        cout << "'/': division" << "\n";
+        cout << "'^': exponentiation" << "\n";
+        cout << "'r': root (index r radicand)" << "\n";
+        cout << "'n': negative number" << "\n";
+        cout << "'()': give priority" << "\n\n";
 
     return 0;
 }
+
+
