@@ -1,76 +1,222 @@
 #include <iostream>
+#include <sstream>
 #include <cctype>
 #include <string>
+#include <string.h>
+#include <cstring>
 #include <cmath>
 #include "functions.hpp"
 
-#define ADDITION 9700
-#define SUBTRACTION 11500
-#define MULTIPLICATION 10900
-#define DIVISION 10000
-#define EXPONENCIATION 10100
-
 using namespace std;
 
-const int ARGS = 4; // Exact number of arguments needed in the operation
+int main(){
 
-int main(int argc, char **argv) {
+    //TURN ON DEBUG? 
+    int debug = 0;
 
-    if (argc != ARGS) {
-        if (argc == 2) {
-            char command{tolower(argv[1][0])};
+    //Vars
+    char buffer[1000], expressionFilter[1000];
+    string expression;
+    string components[1000];
+    int space = 0, i = 0, j = 0, k = 0, bufferLen = 0, componentsLen = 0, moreParenthesisAhead = 0, pStart = 0, pEnd = 0;
 
-            if (command == 'h') {
-                cout << "To use the calculater, please type in the terminal: " << "\n";
-                cout << "{name_of_the_executable} {operation} {value1} {value2}" << "\n\n";
 
-                cout << "Operation may be:" << "\n";
-                cout << "'a': addition" << "\n";
-                cout << "'s': subtraction" << "\n";
-                cout << "'m': multiplication" << "\n";
-                cout << "'d': division" << "\n";
-                cout << "'e': exponentiation" << "\n\n";
-            }
-        }
-        
-        cout << "Not in the supported format." << "\n";
-        cout << "Type '{name_of_the_executable} h' to know best." << "\n";
+    //Instructions
+    getHelp();
 
-        return 0;
-    }
 
-    long long hash = stringToHash(argv[1]);
-    int value1{stoi(argv[2])};
-    int value2{stoi(argv[3])};
-    int result;
-    bool has_result{true};
+    //Get string
+    cout << "Type expression: " << endl << " ";
+    getline(cin, expression);
+    int stringLen = expression.length();
 
-    switch(hash) {
-        case ADDITION:
-            result = value1 + value2;
+
+    //Space formatting
+    space = 0;
+    for (j =0; j < stringLen; j++){
+        switch (expression[j])
+        {
+        case '(':
+            expressionFilter[j + space + 1] = '(';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
             break;
-        case SUBTRACTION:
-            result = value1 - value2;
+        case ')':
+            expressionFilter[j + space + 1] = ')';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
             break;
-        case MULTIPLICATION:
-            result = value1 * value2;
+        case '+':
+            expressionFilter[j + space + 1] = 'a';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
             break;
-        case DIVISION:
-            result = value1 / value2;
+        case '-':
+            expressionFilter[j + space + 1] = 's';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
             break;
-        case EXPONENCIATION:
-            result = pow(value1, value2);
+        case 'x':
+            expressionFilter[j + space + 1] = 'm';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
+            break;
+        case '/':
+            expressionFilter[j + space + 1] = 'd';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
+            break;
+        case '^':
+            expressionFilter[j + space + 1] = 'e';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
+            break;
+        case 'r':
+            expressionFilter[j + space + 1] = 'r';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
+            break;
+        case 'n':
+            expressionFilter[j + space + 1] = 'n';
+            expressionFilter[j + space] = ' ';
+            expressionFilter[j + space + 2] = ' ';
+            space = space + 2;
             break;
         default:
-            has_result = false;
+            expressionFilter[j + space] = expression[j];
+        }
     }
 
-    if (has_result) {
-        cout << "The result you want is " << result << "\n";
+
+    //Remove unnecessary spaces
+    k = 0;
+    for(j = 0; j<stringLen+space; j++ ){
+        if(expressionFilter[j-1] == ' '){
+            if(expressionFilter[j] == ' '){
+                continue;
+            }
+        }
+        buffer[k] = expressionFilter[j];
+        k++;
+        bufferLen = k;
     }
-    else {
-        cout << "The operation that you ask is not supported yet!" << "\n";
+    buffer[bufferLen] = '\0';
+
+
+    //Cut string in components (array of strings)
+    istringstream ss(buffer);
+    string del;
+    fflush(stdin);
+    k = 0;
+    while(getline(ss, del, ' ')) {
+        components[k] = del; 
+        k++;
+        componentsLen = k;
     }
 
-    return 0;
+
+    //Little filters - DONT unite these loops
+    //Apply n
+    for(j = 0; j < componentsLen; j++){
+        if(components[j] == "n"){
+            components[j] = " ";
+            if(!isParam(components[j+1])){cout << "Error! Wrong syntax."; return 0;}
+            int swap = stof(components[j+1]);
+            swap = swap * (-1);
+            components[j+1] = to_string(swap);
+            trimComponents(componentsLen ,components);
+        }
+    }
+    //Verify 2 2 ...
+    for(j = 0; j < componentsLen; j++){
+         if(isParam(components[j])){
+            if(isParam(components[j+1])){
+                cout << "Error! Wrong syntax."; 
+                return 0;
+            }
+        }
+    }
+    //Verify ++ -- ...
+    for(j = 0; j < componentsLen; j++){
+         if(!isNotParam(components[j])){
+            if(!isNotParam(components[j+1])){
+                cout << "Error! Wrong syntax."; 
+                return 0;
+            }
+        }
+    }
+    
+
+    //Print
+    for(j = 0; j < componentsLen && debug == 1; j++){
+        cout << components[j] << " ";
+    }
+
+
+    //Search for parenthesis
+    for(j = 0; j < componentsLen; j++){
+        if(components[j] == "("){
+
+            //Is there a parenthesis with higher priority?
+            moreParenthesisAhead = 0;
+            for(k=j+1; k<stringLen; k++){
+                if(components[k] == "("){
+                    moreParenthesisAhead = 1;
+                }
+            }
+
+            pStart = 0;
+            pEnd = 0;
+            //NO
+            if(moreParenthesisAhead == 0){
+                pStart = j;
+                for(k = pStart + 1; k<stringLen+1; k++){
+                    if(components[k] == ")"){
+                        pEnd = k;
+                        break;
+                    }
+                }
+
+                if(pEnd == 0){cout << "Error! Your expression is missing a )."; return 0;}
+
+                components[pStart] = " ";
+                components[pEnd] = " ";
+                calculateParenthesis(componentsLen, pStart, pEnd, components);
+                
+                //Print
+                if(debug == 1){cout << "\n";}
+                for(j = 0; j < componentsLen && debug == 1; j++){
+                    cout << components[j] << " ";
+                }
+
+                j=0;
+                continue;
+
+            }
+        }
+    }
+
+
+    //Last step
+    calculateParenthesis(componentsLen, 0, componentsLen, components);
+    removeExtraParenthesis(componentsLen ,components);
+    trimComponents(componentsLen ,components);           
+    if(components[0] == ""){components[0] = components[1];} // bug fix
+
+
+    cout << "\nResponse: ";
+    cout << components[0];
+    
+    
+
+
 }
+
