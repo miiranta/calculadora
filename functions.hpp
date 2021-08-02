@@ -12,6 +12,7 @@
 
 using namespace std;
 
+
 long long stringToHash(string a){
     long long add = 0;
     for(int i = 0; i < a.size() ;i++){
@@ -19,23 +20,6 @@ long long stringToHash(string a){
         add = add*100;
     }
     return add;
-}
-
-
-int getHelp(){
-        cout << "\n" << "To use the calculator, please type in the terminal an expression using the following syntax: " << "\n\n";
-
-        cout << "Operation may be:" << "\n";
-        cout << "'+': addition" << "\n";
-        cout << "'-': subtraction" << "\n";
-        cout << "'x': multiplication" << "\n";
-        cout << "'/': division" << "\n";
-        cout << "'^': exponentiation" << "\n";
-        cout << "'r': root (index r radicand)" << "\n";
-        cout << "'n': negative number" << "\n";
-        cout << "'()': give priority" << "\n\n";
-
-    return 0;
 }
 
 
@@ -164,12 +148,3 @@ bool isParam(string line){
     return *p == 0;
 }
 
-
-bool isNotParam(string line){
-    if(line == ""){return 1;}
-    if(line == "("){return 1;}
-    if(line == ")"){return 1;}
-    char* p;
-    strtol(line.c_str(), &p, 10);
-    return *p == 0;
-}
