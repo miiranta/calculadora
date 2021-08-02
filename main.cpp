@@ -20,10 +20,8 @@ int main(){
     string components[1000];
     int space = 0, i = 0, j = 0, k = 0, bufferLen = 0, componentsLen = 0, moreParenthesisAhead = 0, pStart = 0, pEnd = 0;
 
-
     //Instructions
     getHelp();
-
 
     //Get string
     cout << "Type expression: " << endl << " ";
